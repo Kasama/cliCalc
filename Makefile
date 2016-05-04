@@ -14,7 +14,7 @@ all: $(OBJS)
 $(DOTLEX): $(LEXFILE)
 	lex $(LEXFILE)
 
-$(DOTYACC): $(YACCFILE)
+$(DOTYACCC): $(YACCFILE)
 	yacc -d -v $(YACCFILE)
 
 .PHONY: clean

@@ -7,6 +7,7 @@
 
 %%
 [ \t]+			{ ; }
+"exit"			{ return EXIT_CODE; }
 [0-9]+			{ yylval.num = atoi(yytext); return INTEGER; }
 [a-zA-Z]		{ yylval.v = *yytext; return IDENTIFIER; }
 "+"				{ return PLUS; }

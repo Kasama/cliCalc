@@ -11,6 +11,7 @@ void yyerror(char *);
 
 int variables[ALPHABET*2] = {0};
 #define ACCESS(v) variables[islower(v) ? v - 'a' : ALPHABET + v - 'A']
+int yydebug = 1;
 
 %}
 
@@ -34,6 +35,8 @@ int variables[ALPHABET*2] = {0};
 
 %token LINEFEED
 
+%token EXIT_CODE
+
 %type <num> expression
 %type <num> mults
 %type <num> term
@@ -48,7 +51,8 @@ program:
 ;
 
 line:
-	expression LINEFEED						{ printf("%d\n", $1); }
+	EXIT_CODE LINEFEED						{ printf("bye\n"); exit(EXIT_SUCCESS); }
+|	expression LINEFEED						{ printf("%d\n", $1); }
 |	LINEFEED
 ;
 
@@ -61,7 +65,7 @@ expression:
 
 mults:
 	mults MULT term							{ $$ = $1 * $3; }
-|	mults DIV term							{ $$ = $1 / $3; }
+|	mults DIV term							{ if ($3 != 0) $$ = $1 / $3; else { printf("Floating point exception: Division by zero\n"); $$ = RAND_MAX;} }
 |	term									{ $$ = $1; }
 ;
 
