@@ -1,0 +1,445 @@
+State 13 conflicts: 1 shift/reduce
+State 33 conflicts: 2 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: line program
+    2        | line
+
+    3 line: expression LINEFEED
+    4     | var LINEFEED
+    5     | LINEFEED
+
+    6 expression: var ASSIGN expression
+    7           | expression PLUS mults
+    8           | expression MINUS mults
+    9           | mults
+
+   10 mults: mults MULT term
+   11      | mults DIV term
+   12      | term
+
+   13 term: PLUS term
+   14     | MINUS term
+   15     | LPARENT expression RPARENT
+   16     | number
+
+   17 number: INTEGER
+   18       | var
+
+   19 var: VARIABLE
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+VARIABLE (258) 19
+INTEGER (259) 17
+PLUS (260) 7 13
+MINUS (261) 8 14
+MULT (262) 10
+DIV (263) 11
+ASSIGN (264) 6
+LPARENT (265) 15
+RPARENT (266) 15
+LINEFEED (267) 3 4 5
+
+
+Nonterminals, with rules where they appear
+
+$accept (13)
+    on left: 0
+program (14)
+    on left: 1 2, on right: 0 1
+line (15)
+    on left: 3 4 5, on right: 1 2
+expression (16)
+    on left: 6 7 8 9, on right: 3 6 7 8 15
+mults (17)
+    on left: 10 11 12, on right: 7 8 9 10 11
+term (18)
+    on left: 13 14 15 16, on right: 10 11 12 13 14
+number (19)
+    on left: 17 18, on right: 16
+var (20)
+    on left: 19, on right: 4 6 18
+
+
+State 0
+
+    0 $accept: . program $end
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+    LINEFEED  shift, and go to state 6
+
+    program     go to state 7
+    line        go to state 8
+    expression  go to state 9
+    mults       go to state 10
+    term        go to state 11
+    number      go to state 12
+    var         go to state 13
+
+
+State 1
+
+   19 var: VARIABLE .
+
+    $default  reduce using rule 19 (var)
+
+
+State 2
+
+   17 number: INTEGER .
+
+    $default  reduce using rule 17 (number)
+
+
+State 3
+
+   13 term: PLUS . term
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    term    go to state 14
+    number  go to state 12
+    var     go to state 15
+
+
+State 4
+
+   14 term: MINUS . term
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    term    go to state 16
+    number  go to state 12
+    var     go to state 15
+
+
+State 5
+
+   15 term: LPARENT . expression RPARENT
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    expression  go to state 17
+    mults       go to state 10
+    term        go to state 11
+    number      go to state 12
+    var         go to state 18
+
+
+State 6
+
+    5 line: LINEFEED .
+
+    $default  reduce using rule 5 (line)
+
+
+State 7
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 19
+
+
+State 8
+
+    1 program: line . program
+    2        | line .
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+    LINEFEED  shift, and go to state 6
+
+    $default  reduce using rule 2 (program)
+
+    program     go to state 20
+    line        go to state 8
+    expression  go to state 9
+    mults       go to state 10
+    term        go to state 11
+    number      go to state 12
+    var         go to state 13
+
+
+State 9
+
+    3 line: expression . LINEFEED
+    7 expression: expression . PLUS mults
+    8           | expression . MINUS mults
+
+    PLUS      shift, and go to state 21
+    MINUS     shift, and go to state 22
+    LINEFEED  shift, and go to state 23
+
+
+State 10
+
+    9 expression: mults .
+   10 mults: mults . MULT term
+   11      | mults . DIV term
+
+    MULT  shift, and go to state 24
+    DIV   shift, and go to state 25
+
+    $default  reduce using rule 9 (expression)
+
+
+State 11
+
+   12 mults: term .
+
+    $default  reduce using rule 12 (mults)
+
+
+State 12
+
+   16 term: number .
+
+    $default  reduce using rule 16 (term)
+
+
+State 13
+
+    4 line: var . LINEFEED
+    6 expression: var . ASSIGN expression
+   18 number: var .
+
+    ASSIGN    shift, and go to state 26
+    LINEFEED  shift, and go to state 27
+
+    LINEFEED  [reduce using rule 18 (number)]
+    $default  reduce using rule 18 (number)
+
+
+State 14
+
+   13 term: PLUS term .
+
+    $default  reduce using rule 13 (term)
+
+
+State 15
+
+   18 number: var .
+
+    $default  reduce using rule 18 (number)
+
+
+State 16
+
+   14 term: MINUS term .
+
+    $default  reduce using rule 14 (term)
+
+
+State 17
+
+    7 expression: expression . PLUS mults
+    8           | expression . MINUS mults
+   15 term: LPARENT expression . RPARENT
+
+    PLUS     shift, and go to state 21
+    MINUS    shift, and go to state 22
+    RPARENT  shift, and go to state 28
+
+
+State 18
+
+    6 expression: var . ASSIGN expression
+   18 number: var .
+
+    ASSIGN  shift, and go to state 26
+
+    $default  reduce using rule 18 (number)
+
+
+State 19
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 20
+
+    1 program: line program .
+
+    $default  reduce using rule 1 (program)
+
+
+State 21
+
+    7 expression: expression PLUS . mults
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    mults   go to state 29
+    term    go to state 11
+    number  go to state 12
+    var     go to state 15
+
+
+State 22
+
+    8 expression: expression MINUS . mults
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    mults   go to state 30
+    term    go to state 11
+    number  go to state 12
+    var     go to state 15
+
+
+State 23
+
+    3 line: expression LINEFEED .
+
+    $default  reduce using rule 3 (line)
+
+
+State 24
+
+   10 mults: mults MULT . term
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    term    go to state 31
+    number  go to state 12
+    var     go to state 15
+
+
+State 25
+
+   11 mults: mults DIV . term
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    term    go to state 32
+    number  go to state 12
+    var     go to state 15
+
+
+State 26
+
+    6 expression: var ASSIGN . expression
+
+    VARIABLE  shift, and go to state 1
+    INTEGER   shift, and go to state 2
+    PLUS      shift, and go to state 3
+    MINUS     shift, and go to state 4
+    LPARENT   shift, and go to state 5
+
+    expression  go to state 33
+    mults       go to state 10
+    term        go to state 11
+    number      go to state 12
+    var         go to state 18
+
+
+State 27
+
+    4 line: var LINEFEED .
+
+    $default  reduce using rule 4 (line)
+
+
+State 28
+
+   15 term: LPARENT expression RPARENT .
+
+    $default  reduce using rule 15 (term)
+
+
+State 29
+
+    7 expression: expression PLUS mults .
+   10 mults: mults . MULT term
+   11      | mults . DIV term
+
+    MULT  shift, and go to state 24
+    DIV   shift, and go to state 25
+
+    $default  reduce using rule 7 (expression)
+
+
+State 30
+
+    8 expression: expression MINUS mults .
+   10 mults: mults . MULT term
+   11      | mults . DIV term
+
+    MULT  shift, and go to state 24
+    DIV   shift, and go to state 25
+
+    $default  reduce using rule 8 (expression)
+
+
+State 31
+
+   10 mults: mults MULT term .
+
+    $default  reduce using rule 10 (mults)
+
+
+State 32
+
+   11 mults: mults DIV term .
+
+    $default  reduce using rule 11 (mults)
+
+
+State 33
+
+    6 expression: var ASSIGN expression .
+    7           | expression . PLUS mults
+    8           | expression . MINUS mults
+
+    PLUS   shift, and go to state 21
+    MINUS  shift, and go to state 22
+
+    PLUS      [reduce using rule 6 (expression)]
+    MINUS     [reduce using rule 6 (expression)]
+    $default  reduce using rule 6 (expression)
