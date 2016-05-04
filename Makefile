@@ -1,6 +1,8 @@
 DOTLEX = lex.yy.c
-DOTYACC = y.tab.c
-OBJS = $(DOTYACC) $(DOTLEX)
+DOTYACC = y.tab
+DOTYACCC = $(DOTYACC).c
+DOTYACCH = $(DOTYACC).h
+OBJS = $(DOTYACCC) $(DOTLEX)
 NAME = calc
 LEXFILE = $(NAME).l
 YACCFILE = $(NAME).y
@@ -18,4 +20,4 @@ $(DOTYACC): $(YACCFILE)
 .PHONY: clean
 
 clean:
-	rm $(OBJS) $(OUT)
+	rm $(OBJS) $(OUT) $(DOTYACCC) y.output

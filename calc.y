@@ -19,7 +19,7 @@ int variables[ALPHABET*2] = {0};
 	int num;
 }
 
-%token <v> VARIABLE
+%token <v> IDENTIFIER
 %token <num> INTEGER
 
 %token PLUS
@@ -49,12 +49,11 @@ program:
 
 line:
 	expression LINEFEED						{ printf("%d\n", $1); }
-|	var LINEFEED							{ printf("%c = %d\n", $1, ACCESS($1)); }
 |	LINEFEED
 ;
 
 expression:
-	var ASSIGN expression					{ $$ = $3; ACCESS($1) = $3; }
+	IDENTIFIER ASSIGN expression			{ $$ = $3; ACCESS($1) = $3; }
 |	expression PLUS  mults					{ $$ = $1 + $3; }
 |	expression MINUS mults					{ $$ = $1 - $3; }
 |	mults									{ $$ = $1; }
@@ -75,11 +74,11 @@ term:
 
 number:
 	INTEGER
-|	var										{ $$ = ACCESS($1); }
+|	var										{ $$ = $1; }
 ;
 
 var:
-	VARIABLE								{ $$ = $1; }
+	IDENTIFIER								{ $$ = ACCESS($1); }
 ;
 
 %%

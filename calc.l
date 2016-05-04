@@ -8,6 +8,7 @@
 %%
 [ \t]+			{ ; }
 [0-9]+			{ yylval.num = atoi(yytext); return INTEGER; }
+[a-zA-Z]		{ yylval.v = *yytext; return IDENTIFIER; }
 "+"				{ return PLUS; }
 "-"				{ return MINUS; }
 "*"				{ return MULT; }
@@ -16,5 +17,4 @@
 ")"				{ return RPARENT; }
 "="				{ return ASSIGN; }
 \n				{ return LINEFEED; }
-[a-zA-Z]		{ yylval.v = *yytext; return VARIABLE; }
 .				{ char msg[25]; sprintf(msg, "%s <%s>", "invalid character", yytext); yyerror(msg); }
