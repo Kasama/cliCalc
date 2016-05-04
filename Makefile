@@ -9,13 +9,13 @@ YACCFILE = $(NAME).y
 OUT = main
 
 all: $(OBJS)
-	gcc -lfl -o $(OUT) $(OBJS)
+	gcc -std=c90 -lfl -o $(OUT) $(OBJS)
 
 $(DOTLEX): $(LEXFILE)
 	lex $(LEXFILE)
 
 $(DOTYACCC): $(YACCFILE)
-	yacc -d -v $(YACCFILE)
+	yacc --warnings=all -y -d -v $(YACCFILE)
 
 .PHONY: clean
 
