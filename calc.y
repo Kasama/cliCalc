@@ -1,26 +1,33 @@
-%{
+%code {
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <float.h>
 #include <ctype.h>
 
-#define ALPHABET 26
+#define NVARS 50
 
 int yylex(void);
 void yyerror(char *);
+void cleanup_and_exit(int);
 
-double variables[ALPHABET*2] = {0};
-#define ACCESS(v) variables[islower(v) ? v - 'a' : ALPHABET + v - 'A']
+int nvars = 0;
+int nMalloc = 1;
+double * variables = NULL;
+char ** varNames = NULL;
 int yydebug = 1;
 
 #define PROMPT ">> "
 #define DRAW_PROMPT printf("%s", PROMPT)
 
-%}
+}
+
+%code provides {
+	int accessVariable(char *);
+}
 
 %union {
-	char v;
+	int v;
 	double num;
 }
 
@@ -55,8 +62,8 @@ program:
 ;
 
 line:
-	EXIT_CODE LINEFEED						{ printf("bye\n"); exit(EXIT_SUCCESS); }
-|	IDENTIFIER ASSIGN expression LINEFEED	{ ACCESS($1) = $3; DRAW_PROMPT; }
+	EXIT_CODE LINEFEED						{ printf("bye\n"); cleanup_and_exit(EXIT_SUCCESS); }
+|	IDENTIFIER ASSIGN expression LINEFEED	{ variables[$1] = $3; DRAW_PROMPT; }
 |	expression LINEFEED						{ printf("%lf\n%s", $1, PROMPT); }
 |	LINEFEED								{ DRAW_PROMPT; }
 |	error LINEFEED							{ yyerrok; DRAW_PROMPT; }
@@ -87,18 +94,54 @@ number:
 ;
 
 var:
-	IDENTIFIER								{ $$ = ACCESS($1); }
+	IDENTIFIER								{ $$ = variables[$1]; }
 ;
 
 %%
+
+int accessVariable(char * name){
+
+	int i = 0;
+	int invar = 0;
+	for (i = 0; i < nvars; i++){
+		if (strcmp(name, varNames[i]) == 0)
+			return i;
+	}
+	invar = nvars;
+	varNames[invar] = strdup(name);
+	variables[invar] = 0;
+	nvars++;
+	if (nvars >= NVARS * nMalloc){
+		nMalloc++;
+		varNames = realloc(varNames, sizeof(char *) * NVARS * nMalloc);
+	}
+
+	return invar;
+
+}
 
 void yyerror(char *s){
 	fprintf(stderr, "%s\n", s);
 	return;
 }
 
+void cleanup_and_exit(int exit_code){
+
+	int i;
+	free(variables);
+	for (i = 0; i < nvars; i++){
+		free(varNames[i]);
+	}
+	free(varNames);
+	exit(exit_code);
+
+}
+
 int main(int argc, char *argv[]){
+	variables = calloc(NVARS * nMalloc, sizeof(double *));
+	varNames = calloc(NVARS * nMalloc, sizeof(char **));
 	DRAW_PROMPT;
 	yyparse();
-	return EXIT_SUCCESS;
+	cleanup_and_exit(EXIT_SUCCESS);
+	return EXIT_FAILURE;
 }

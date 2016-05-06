@@ -9,7 +9,7 @@
 [ \t]+											{ ; }
 "exit"											{ return EXIT_CODE; }
 (([0-9]+(\.[0-9]*)?)|([0-9]*\.[0-9]+))			{ yylval.num = atof(yytext); return DOUBLE; }
-[a-zA-Z]										{ yylval.v = *yytext; return IDENTIFIER; }
+[a-zA-Z][a-zA-Z0-9]*							{ yylval.v = accessVariable(yytext); return IDENTIFIER; }
 "+"												{ return PLUS; }
 "-"												{ return MINUS; }
 "*"												{ return MULT; }
